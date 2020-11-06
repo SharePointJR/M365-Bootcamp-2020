@@ -1,0 +1,705 @@
+*****************************
+DO NOT COPY THE ASTERISKS 
+COPY ONLY THE TEXT BETWEEN THEM
+
+DO NOT COPY THE SECTION HEADERS
+COPY ONLY THE VALUES BELOW THEM
+*****************************
+
+*********************************
+2.5 Notify Requestor - Rename
+*********************************
+Send Requestor a Teams Message about Request
+*********************************
+
+*********************************
+2.6 Notify Requestor - Headline
+*********************************
+Your Teams Requests is Out for Approval - @{triggerBody()?['Title']}
+*********************************
+
+*********************************
+2.8 Notify Requestor - Message
+*********************************
+Your request for a new Team (@{triggerBody()?['Title']}) is out for approval.  You will be notified when it has been approved or rejected.
+*********************************
+
+*********************************
+2.9 Notify Requestor - Summary
+*********************************
+Out for Approval: @{triggerBody()?['Title']}
+*********************************
+
+*********************************
+3.5 Create and Initialize Tenant ID Variable - Rename
+*********************************
+Init TenantId
+*********************************
+
+*********************************
+3.6 Create and Initialize Tenant ID Variable - Name
+*********************************
+TenantId
+*********************************
+
+*********************************
+4.5 Create and Initialize Client ID Variable - Rename
+*********************************
+Init ClientId
+*********************************
+
+*********************************
+4.6 Create and Initialize Client ID Variable - Name
+*********************************
+ClientId
+*********************************
+
+*********************************
+5.5 Create and Initialize Original Secret ID Variable - Rename
+*********************************
+Init OriginalSecretId
+*********************************
+
+*********************************
+5.6 Create and Initialize Orignal SecretID Variable - Name
+*********************************
+OriginalSecretId
+*********************************
+
+*********************************
+6.5 Create and Initialize Secret ID Variable - Rename
+*********************************
+Init SecretId
+*********************************
+
+*********************************
+6.6 Create and Initialize Secret ID Variable - Name
+*********************************
+SecretId
+*********************************
+
+*********************************
+6.8 Create and Initialize Secret ID Variable - Value
+*********************************
+@{encodeUriComponent(variables('OriginalSecretId'))}
+*********************************
+
+*********************************
+7.5 Create and Initialize Location Variable - Rename
+*********************************
+Init Location
+*********************************
+
+*********************************
+7.6 Create and Initialize Secret ID Variable - Name
+*********************************
+Location
+*********************************
+
+*********************************
+8.5 Create and Initialize Site Owner ID Array Variable - Rename
+*********************************
+Init SOIDArray
+*********************************
+
+*********************************
+8.6 Create and Initialize Site Owner ID Array Variable - Name
+*********************************
+SOIDArray
+*********************************
+
+*********************************
+9.4 Fill Site Owners Array Variable - Rename
+*********************************
+Fill SOIDArray
+*********************************
+
+*********************************
+9.10 Fill Site Owners Array Variable - Rename
+*********************************
+Get Owner Profile
+*********************************
+
+*********************************
+9.16 Fill Site Owners Array Variable - Rename
+*********************************
+Append Owner ID to SOIDArray
+*********************************
+
+*********************************
+9.18 Fill Site Owners Array Variable - Value
+*********************************
+@{concat('https://graph.microsoft.com/v1.0/users/',body('Get_Owner_Profile')?['id'])}
+*********************************
+
+*********************************
+10.5 Create and Initialize ApproverEmail Variable - Rename
+*********************************
+Init ApproverEmail
+*********************************
+
+*********************************
+10.6 Create and Initialize ApproverEmail Variable - Name
+*********************************
+ApproverEmail
+*********************************
+
+*********************************
+11.4 Scoping the Get Manager “Try” Block - Rename
+*********************************
+Scope - Get Manager - Try
+*********************************
+
+*********************************
+11.9 Scoping the Get Manager “Try” Block - Rename
+*********************************
+Get Requestors Manager
+*********************************
+
+*********************************
+11.15 Scoping the Get Manager “Try” Block - Rename
+*********************************
+Set ApproverEmail to Manager
+*********************************
+
+*********************************
+12.4 Scoping the Get Manager “Catch” Block - Rename
+*********************************
+Scope - Get Manager - Catch
+*********************************
+
+*********************************
+12.9 Scoping the Get Manager “Catch” Block - Rename
+*********************************
+Set ApproverEmail to Requestor
+*********************************
+
+*********************************
+13.5 Create and Initialize Primary Site Owner ID Array Variable - Rename
+*********************************
+Init PrimarySOIDArray
+*********************************
+
+*********************************
+13.6 Create and Initialize Primary Site Owner ID Array Variable - Name
+*********************************
+PrimarySOIDArray
+*********************************
+
+*********************************
+13.8 Create and Initialize Primary Site Owner ID Array Variable - Value
+*********************************
+[@{first(variables('SOIDArray'))}]
+*********************************
+
+*********************************
+14.5 Create and Initialize Secondary Site Owner ID Array Variable - Rename
+*********************************
+Init SecondarySOIDArray
+*********************************
+
+*********************************
+14.6 Create and Initialize Secondary Site Owner ID Array Variable - Name
+*********************************
+SecondarySOIDArray
+*********************************
+
+*********************************
+14.8 Create and Initialize Secondary Site Owner ID Array Variable - Value
+*********************************
+@{skip(variables('SOIDArray'),1)}
+*********************************
+
+*********************************
+15.5 Create and Initialize the Create Team API Body Variable - Rename
+*********************************
+Init CreateTeamAPIBody
+*********************************
+
+*********************************
+15.6 Create and Initialize the Create Team API Body Variable - Name
+*********************************
+CreateTeamAPIBody
+*********************************
+
+*********************************
+15.8 Create and Initialize the Create Team API Body Variable - Value
+*********************************
+{
+  "template@odata.bind": "https://graph.microsoft.com/beta/teamsTemplates/@{triggerBody()?['MSTeamTemplate']?['Value']}",
+  "displayName": "@{triggerBody()?['Title']}",
+  "description": "@{triggerBody()?['MSDescription']}",
+  "owners@odata.bind": @{variables('PrimarySOIDArray')},
+  "memberSettings": {
+    "allowCreateUpdateChannels": true,
+    "allowDeleteChannels": true,
+    "allowAddRemoveApps": true,
+    "allowCreateUpdateRemoveTabs": true,
+    "allowCreateUpdateRemoveConnectors": true
+  },
+  "guestSettings": {
+    "allowCreateUpdateChannels": false,
+    "allowDeleteChannels": false
+  },
+  "funSettings": {
+    "allowGiphy": true,
+    "giphyContentRating": "Moderate",
+    "allowStickersAndMemes": true,
+    "allowCustomMemes": true
+  },
+  "messagingSettings": {
+    "allowUserEditMessages": true,
+    "allowUserDeleteMessages": true,
+    "allowOwnerDeleteMessages": true,
+    "allowTeamMentions": true,
+    "allowChannelMentions": true
+  }
+}
+*********************************
+
+*********************************
+16.6 Create Approval Action - Title
+*********************************
+Teams Request - @{triggerBody()?['Title']}
+*********************************
+
+*********************************
+16.8 Create Approval Action - Detail
+*********************************
+# Microsoft Teams Request
+
+A request for a Microsoft Team was submitted.  Please review and Approve or Reject it. The details of the request are as follows:
+- Team Name: @{triggerBody()?['Title']}
+- Requestor: @{triggerBody()?['Author']?['DisplayName']}
+- Guest Access: @{triggerBody()?['MSAllowGuests']}
+*********************************
+
+*********************************
+17.4 Send Approval Request to Each Approver - Rename
+*********************************
+Apply to Each Approver Email
+*********************************
+
+*********************************
+17.10 Send Approval Request to Each Approver - Rename
+*********************************
+Send Approval Request to Approver in Teams
+*********************************
+
+*********************************
+17.13 Send Approval Request to Each Approver - Summary
+*********************************
+Approval required: @{triggerBody()?['Title']}
+*********************************
+
+*********************************
+19.4 Determine if approved - Rename
+*********************************
+Determine if Approved
+*********************************
+
+*********************************
+19.6 Determine if approved - Second Value
+*********************************
+Approve
+*********************************
+
+*********************************
+20.4 Generate Access Token - Rename
+*********************************
+Generate Access Token
+*********************************
+
+*********************************
+20.6 Generate Access Token - URI
+*********************************
+https://login.microsoftonline.com/@{variables('TenantId')}/oauth2/v2.0/token
+*********************************
+
+*********************************
+20.7 Generate Access Token - First Header Key
+*********************************
+Content-Type
+*********************************
+
+*********************************
+20.8 Generate Access Token - First Header Value
+*********************************
+application/x-www-form-urlencoded
+*********************************
+
+*********************************
+20.9 Generate Access Token - Body
+*********************************
+client_id=@{variables('ClientId')}&client_secret=@{variables('SecretId')}&grant_type=client_credentials&scope=https%3A%2F%2Fgraph.microsoft.com%2F.default
+*********************************
+
+*********************************
+21.4 Parse Access Token - Rename
+*********************************
+Parse Access Token
+*********************************
+
+*********************************
+21.6 Parse Access Token - Schema
+*********************************
+{
+    "type": "object",
+    "properties": {
+        "token_type": {
+            "type": "string"
+        },
+        "expires_in": {
+            "type": "integer"
+        },
+        "ext_expires_in": {
+            "type": "integer"
+        },
+        "access_token": {
+            "type": "string"
+        }
+    }
+}
+*********************************
+
+*********************************
+22.4 Call REST to Create Team - Rename
+*********************************
+Create Team API
+*********************************
+
+*********************************
+22.6 Call REST to Create Team - URI
+*********************************
+https://graph.microsoft.com/beta/teams
+*********************************
+
+*********************************
+22.7 Call REST to Create Team - First Header Key
+*********************************
+Content-Type
+*********************************
+
+*********************************
+22.8 Call REST to Create Team - First Header Value
+*********************************
+application/json
+*********************************
+
+*********************************
+22.9 Call REST to Create Team - Second Header Key
+*********************************
+Authorization
+*********************************
+
+*********************************
+22.11 Call REST to Create Team - Body
+*********************************
+@{variables('CreateTeamAPIBody')}
+*********************************
+
+*********************************
+23.5 Set Location Variable - Rename
+*********************************
+Set Location
+*********************************
+
+*********************************
+23.7 Set Location Variable - Value
+*********************************
+@{outputs('Create_Team_API')['headers']?['location']}
+*********************************
+
+*********************************
+24.5 Get Index of First Quote - Rename
+*********************************
+Get Index of First Quote
+*********************************
+
+*********************************
+24.6 Set Location Variable - Inputs
+*********************************
+@{add(int(indexOf(variables('Location'), '''')), 1)}
+*********************************
+
+*********************************
+25.5 Get Team Id - Rename
+*********************************
+Get Team Id
+*********************************
+
+*********************************
+25.6 Get Team Id - Inputs
+*********************************
+@{substring(variables('Location'), outputs('Get_Index_of_First_Quote'),36)}
+*********************************
+
+*********************************
+26.5 Delay - Rename
+*********************************
+Delay 60 secs
+*********************************
+
+*********************************
+25.6 Delay - Count
+*********************************
+60
+*********************************
+
+*********************************
+27.4 Get Group Details - Rename
+*********************************
+Get Group Details
+*********************************
+
+*********************************
+27.6 Get Group Details - URI
+*********************************
+https://graph.microsoft.com/v1.0/groups/@{outputs('Get_Team_Id')}
+*********************************
+
+*********************************
+27.7 Get Group Details - First Header Key
+*********************************
+Authorization
+*********************************
+
+*********************************
+27.8 Get Group Details - First Header Value
+*********************************
+
+*********************************
+
+*********************************
+28.4 Parse Group Details - Rename
+*********************************
+Parse Group Details
+*********************************
+
+*********************************
+28.6 Parse Group details - Schema
+*********************************
+{
+    "type": "object",
+    "properties": {
+        "@@odata.context": {
+            "type": "string"
+        },
+        "id": {
+            "type": "string"
+        },
+        "deletedDateTime": {},
+        "classification": {},
+        "createdDateTime": {
+            "type": "string"
+        },
+        "creationOptions": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "description": {},
+        "displayName": {
+            "type": "string"
+        },
+        "groupTypes": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "isAssignableToRole": {},
+        "mail": {
+            "type": "string"
+        },
+        "mailEnabled": {
+            "type": "boolean"
+        },
+        "mailNickname": {
+            "type": "string"
+        },
+        "onPremisesLastSyncDateTime": {},
+        "onPremisesSecurityIdentifier": {},
+        "onPremisesSyncEnabled": {},
+        "preferredDataLocation": {},
+        "proxyAddresses": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "renewedDateTime": {
+            "type": "string"
+        },
+        "resourceBehaviorOptions": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "resourceProvisioningOptions": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "securityEnabled": {
+            "type": "boolean"
+        },
+        "visibility": {
+            "type": "string"
+        },
+        "onPremisesProvisioningErrors": {
+            "type": "array"
+        }
+    }
+}
+*********************************
+
+*********************************
+29.4 Add Members to Team - Rename
+*********************************
+Loop through Members
+*********************************
+
+*********************************
+30.4 Determine if Guests Allowed - Rename
+*********************************
+Determine Allow Guests
+*********************************
+
+*********************************
+30a.4 Determine if Guests Allowed - Yes - Rename
+*********************************
+Set AllowedToAddGuests to True
+*********************************
+
+*********************************
+30a.6 Determine if Guests Allowed - Yes - URI
+*********************************
+https://graph.microsoft.com/v1.0/groups/@{outputs('Get_Team_Id')}/settings
+*********************************
+
+*********************************
+30a.7 Determine if Guests Allowed - Yes - First Header Key
+*********************************
+Authorization
+*********************************
+
+*********************************
+30a.9 Determine if Guests Allowed - Yes - Second Header Key
+*********************************
+Content-Type
+*********************************
+
+*********************************
+30a.10 Determine if Guests Allowed - Yes - Second Header Value
+*********************************
+application/json
+*********************************
+
+*********************************
+30a.11 Determine if Guests Allowed - Yes - Body
+*********************************
+{
+  "displayName": "Group.Unified.Guest",
+  "templateId": "08d542b9-071f-4e16-94b0-74abb372e3d9",
+  "values": [
+    {
+      "name": "AllowToAddGuests",
+      "value": "True"
+    }
+  ]
+}
+*********************************
+
+*********************************
+30b.4 Determine if Guests Allowed - No - Rename
+*********************************
+Set AllowedToAddGuests to False
+*********************************
+
+*********************************
+30b.6 Determine if Guests Allowed - No - URI
+*********************************
+https://graph.microsoft.com/v1.0/groups/@{outputs('Get_Team_Id')}/settings
+*********************************
+
+*********************************
+30b.7 Determine if Guests Allowed - No - First Header Key
+*********************************
+Authorization
+*********************************
+
+*********************************
+30b.9 Determine if Guests Allowed - No - Second Header Key
+*********************************
+Content-Type
+*********************************
+
+*********************************
+30b.10 Determine if Guests Allowed - No - Second Header Value
+*********************************
+application/json
+*********************************
+
+*********************************
+30b.11 Determine if Guests Allowed - No - Body
+*********************************
+{
+  "displayName": "Group.Unified.Guest",
+  "templateId": "08d542b9-071f-4e16-94b0-74abb372e3d9",
+  "values": [
+    {
+      "name": "AllowToAddGuests",
+      "value": "False"
+    }
+  ]
+}
+*********************************
+
+*********************************
+30b.16 Determine if Guests Allowed - No - Rename
+*********************************
+Invoke Sharing Disabled Site Design
+*********************************
+
+*********************************
+30b.19 Determine if Guests Allowed - No - URI
+*********************************
+/_api/Microsoft.Sharepoint.Utilities.WebTemplateExtensions.SiteScriptUtility.ApplySiteDesign
+*********************************
+
+*********************************
+30b.20 Determine if Guests Allowed - No - Body
+*********************************
+{
+"siteDesignId":"448eee03-6ae2-42a9-acef-74e892ea27d5",
+"webUrl":"https://teamswsbloomberg.sharepoint.com/sites/@{body('Parse_Group_Details')?['mailNickname']}"
+}
+*********************************
+
+*********************************
+31.5 Notification of Completion - Rename
+*********************************
+Send Requestor a Teams Message about Request Completion
+*********************************
+
+*********************************
+31.6 Notification of Completion - Headline
+*********************************
+Your Teams Request has been Completed- @{triggerBody()?['Title']}
+*********************************
+
+*********************************
+31.8 Notification of Completion - Message
+*********************************
+Your request for a new Team (@{triggerBody()?['Title']}) has been completed.
+*********************************
+
+*********************************
+31.9 Notification of Completion - Summary
+*********************************
+Completed: @{triggerBody()?['Title']}
+*********************************

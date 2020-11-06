@@ -1,0 +1,46 @@
+<Elements>
+  <SPOnlineDetails Url="https://teamswsbloomberg.sharepoint.com/sites/teamsprovisioning14" UserName="admin@teamswsbloomberg.onmicrosoft.com" Password="!D3m0!T3n@nt!" />
+  <Fields>
+    <!-- Request Site Columns -->
+    <!-- Description -->
+    <Field Type="Text" ID="{179a4782-2e6a-40ba-9504-3d633b0f4b74}" DisplayName="Description" Name="MSDescription" StaticName="MSDescription" Description="Description of Site or Team" Group="Site Team Request Site Columns" Required="FALSE" />
+    <!-- Team Tempalte -->
+    <Field Type="Choice" ID="{304594f6-4f69-457b-920d-9e7948601c0a}" DisplayName="Team Template" Name="MSTeamTemplate" StaticName="MSTeamTemplate" Description="List of Team Template options" Group="Site Team Request Site Columns" Format="Dropdown" FillInChoice="FALSE" Required="FALSE">
+      <CHOICES>
+        <CHOICE>standard</CHOICE>
+        <CHOICE>educationClass</CHOICE>
+        <CHOICE>educationStaff</CHOICE>
+        <CHOICE>educationProfessionalLearningCommunity</CHOICE>
+        <CHOICE>retailStore</CHOICE>
+        <CHOICE>retailManagerCollaboration</CHOICE>
+        <CHOICE>healthcareWard</CHOICE>
+        <CHOICE>healthcareHospital</CHOICE>
+      </CHOICES>
+    </Field>
+    <!-- Visibility -->
+    <Field Type="Choice" ID="{7360a967-fd97-4219-a8ec-b60a028c2120}" DisplayName="Visibility" Name="MSVisibility" StaticName="MSVisibility" Description="Visibility" Group="Site Team Request Site Columns" Format="Dropdown" FillInChoice="FALSE" Required="FALSE">
+      <CHOICES>
+        <CHOICE>Public</CHOICE>
+        <CHOICE>Private</CHOICE>
+      </CHOICES>
+    </Field>
+    <!-- Classification -->
+    <Field Type="Choice" ID="{632cc422-9e16-4974-8e95-7aa1d5f0e9d3}" DisplayName="Classification" Name="MSClassification" StaticName="MSClassification" Description="Classification" Group="Site Team Request Site Columns" Format="Dropdown" FillInChoice="FALSE" Required="FALSE">
+      <CHOICES>
+        <CHOICE>Public</CHOICE>
+        <CHOICE>Internal</CHOICE>
+        <CHOICE>Confidential</CHOICE>
+      </CHOICES>
+    </Field>
+    <!-- Allow Guests -->
+    <Field Type="Boolean" ID="{465a47b3-1346-4c22-9da4-bd9ec0d4941d}" DisplayName="Allow Guests" Name="MSAllowGuests" StaticName="MSAllowGuests" Description="Toggle if this allows Guests" Group="Site Team Request Site Columns" />
+    <!-- Asset Owners -->
+    <Field Type="UserMulti" ID="{1ec7819e-eb18-4539-83bf-1e2c111a9136}" DisplayName="Asset Owners" Name="MSAssetOwners" StaticName="MSAssetOwners" ShowField="Name" UserSelectionMode="PeopleOnly" Required="FALSE" Mult="TRUE" Group="Site Team Request Site Columns" />
+    <!-- Asset Members -->
+    <Field Type="UserMulti" ID="{033bcb5e-7985-42ea-b827-69e11b4def5a}" DisplayName="Asset Members" Name="MSAssetMembers" StaticName="MSAssetMembers" ShowField="Name" UserSelectionMode="PeopleOnly" Required="FALSE" Mult="TRUE" Group="Site Team Request Site Columns" />
+  </Fields>
+  <!-- Content Type -->
+  <ContentType Name="Site Team Request" Group="Site Team Request Content Types" ParentContentTypeId="0x01" id="0x0100E677E82127415D429B7CB9FBE7CAB501" />
+  <!-- List instance details -->
+  <List Title="Team Requests" Url="TeamRequests" Description="List to hold team requests" TemplateType="100" AddContentType="true" />
+</Elements>
